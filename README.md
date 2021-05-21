@@ -1,6 +1,6 @@
-# casting_chat_2
+# Chat
 
-A new Flutter project.
+An Example from: [Laravel Echo](https://pub.dev/packages/laravel_echo)
 
 ## Getting Started
 

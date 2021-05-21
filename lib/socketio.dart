@@ -29,7 +29,7 @@ class _SocketioPage extends State<SocketioPage> {
     echo = new Echo({
       'broadcaster': 'socket.io',
       'client': IO.io,
-      'host': 'https://wc-extra.smarian.com:6001/',
+      'host': <host_url>,
       'auth': {
         'headers': {
           'Authorization':
