@@ -1,12 +1,12 @@
-import 'dart:convert';
-
 import 'package:casting_chat_2/modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:laravel_echo/laravel_echo.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:developer' as div;
+// ignore: implementation_imports
 import 'package:laravel_echo/src/channel/private-channel.dart';
+// ignore: implementation_imports
 import 'package:laravel_echo/src/connector/socketio-connector.dart';
 
 class SocketioPage extends StatefulWidget {
@@ -19,7 +19,7 @@ class _SocketioPage extends State<SocketioPage> {
   Echo echo;
   bool isConnected = false;
   String channelType = 'private';
-  String channelName = 'chat-channel.payer.1007';
+  String channelName = 'chat-channel.client';
   String event = 'message';
 
   @override
@@ -29,11 +29,12 @@ class _SocketioPage extends State<SocketioPage> {
     echo = new Echo({
       'broadcaster': 'socket.io',
       'client': IO.io,
-      'host': <host_url>,
+      'host': "https://wc-extra.smarian.com:6001/",
+      'authEndpoint': '/broadcasting/auth',
       'auth': {
         'headers': {
           'Authorization':
-              'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNGNlZDNiYzhiMGIzNjQ4Yzg3NjljNzA1NDU1NGY1MWExYTJiYzRlZGNhOTQwMDdlNTk3YWE2M2RjMWMyNDUwNTEzNGM4OWJkMTRjZTY5ZGEiLCJpYXQiOjE2MjA4MTk4MzYuMDI0MDgyLCJuYmYiOjE2MjA4MTk4MzYuMDI0MDg1LCJleHAiOjE2NTIzNTU4MzYuMDIxOTY4LCJzdWIiOiIxMDA3Iiwic2NvcGVzIjpbXX0.OBN3L4iUWr3oCU49p-04BeSGvmx3vaRFEh1ZksnqofADCnkkbbVQmoDfKHgS955ogefzCP79OqEIK_E5mq_VFsf6ZKxrrLZtkEQTsRN1o9uQCeyLu9GAhZ_rkOtfAHrJkWjC9BecyKqH9eLOTTrpuMIkLnJ3HMKstD7wq13SiVAZGOn0eWfBaNyhHdxs6kBoilAEPdp0kJ7MF9t6DzNAkpMgy-Ur_xvi16rMX_FMXCIJH0dVzL-cRH2PVnolM82dQfjrEW5yoBTuGp6lUvy0YOkNeqk2LoIe9bRhSwlTMjXGJOS8z04Sp_TjLGvEmd61_KU0t-lbYUXvMy4LpRIQIlrX0vwGLFiGnx6V1_edegDj8e0tTb27l4PpNk_X0J3Nu1rYUcBrB_yuJP5aUhzJxrS9VQreSiWIEcJv0Exofgks2E5zQ9YlljU7lOeUJshSLzCFmkHJn856pYCLeXNrzdp1NK8Jix5QkKUs2zTdFNjcuzpV9dCdfmvCJdriOE3Qu9t0ZKsVCWZ1sJ-vcaFXf7jaz7jAy22innG6uDw5sAAwn5xkDD9Kko2HUIxSsSWKkKsMO0USKGkWyhcFHneTKos-vANcsKBcBCQJSkFMQaEdOtnNs58x7cvFZNc0WZCKkBjvAdbqvnUcDIbplWSyYDWfK-fx9hyH0GyhGkt4TQo',
+              'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5M2M2MzYzNC04MTQxLTQ4MjktOWUwZC0zYjEzYTVmMmY3OWMiLCJqdGkiOiJlYTFiMTg4Y2YxMTNiMWE2NDkzZTM0NGY5ZDcxNmI2YmVhN2I0MDdlYzE1NWVmMmNkM2E0MWE4MjQ1MjU4NTcxNTBiMTM3YzgyOWViZjZkMCIsImlhdCI6MTYyNDgwMDQ0MS4yMjMxNjQwODE1NzM0ODYzMjgxMjUsIm5iZiI6MTYyNDgwMDQ0MS4yMjMxNjY5NDI1OTY0MzU1NDY4NzUsImV4cCI6MTY1NjMzNjQ0MS4yMjA1Njg4OTUzMzk5NjU4MjAzMTI1LCJzdWIiOiIyIiwic2NvcGVzIjpbXX0.nN2_1FT1XwedBg0o0zo8xIKHzn-gjO_zkjUhIQ-R-5BchcTgNlsAri83dxj3D-9pRpPRchOXckBQ9CrzCyD-MWBIPL1z80ckpd35v4QFvX8tdAH0hKQWJvfiaqnDJkA0M2g0qjuOKEUDsRPA_bVaDX8i4DvlXdyEAsjAJuzjeKlMc1nnTsDrb527lZfDmB0qNdtcMFzfN9D1EmBwF-a20spdX0TAjEfwIPasmGMreVEgKHIMrLPe0uAySqSSIcIkkSPBChOnOVIsZQICgWGJziy6TZ8_fMtMheYWdiRc5J3BXDIS2fl10suNNUjBkNelFO1-_GYKBA9Y1Z7ysXkPAN43Nrn15Lqnwmed-WcQ93V0Gdfd5PLWcw-vuZB8x0XiVrF4aRwDqeNDYxaXFQ4d-qYCPnCEFVr6N6LzL-mzO_87VOrY10A3THvrkR_wq5RQYzb-j5xwt8hLqpNp5pYxSR5FglyGUXf3JS6DAuc4NPArKUen9KOBx_jFwOZCD6smiTwvLjDJsp54aUaWpHYN3tm5G3aq6NAJ77ClI7o8oc72HJfBcnLqAqF2X52J4t7nqEBqRSY8PcmgO_YEwKK-MNh5AtQTHwu8tzwtqJgcvDnz24KELiox1bCcZsU0UwwtvrPk6OFSKjOGqAxYzhG0B8VvuzPPZytQjSfuWlhlYrg',
         }
       }
     });
@@ -75,7 +76,7 @@ class _SocketioPage extends State<SocketioPage> {
     // });
 
     _channel.listen('.$event', (data) {
-      div.log("${jsonEncode(data["data"])}");
+      div.log("$data");
     });
     print("Litening...");
   }
